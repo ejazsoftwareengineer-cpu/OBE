@@ -1,0 +1,223 @@
+<table border="1" style="border-collapse: collapse; width: 100%; border: 1px solid #000000;">
+    <!-- TITLE SECTION (Rows 1-3) -->
+    <tr>
+        <td colspan="100" style="text-align:center; font-size:18px; font-weight:bold; height: 30px; vertical-align: middle; background-color: #f8f9fa;">
+            CLO Attainment Report
+        </td>
+    </tr>
+    <tr>
+        <td colspan="100" style="text-align:center; font-weight: bold; background-color: #f8f9fa;">
+            Course: {{ $course_offering->course->name ?? '-' }} ({{ $course_offering->course->code ?? '-' }})
+        </td>
+    </tr>
+    <tr>
+        <td colspan="100" style="text-align:center; font-weight: bold; background-color: #f8f9fa;">
+            Teacher: {{ $course_offering->teacher->name ?? '-' }}
+        </td>
+    </tr>
+
+    <!-- HIDDEN METADATA SECTION (Rows 4-6) -->
+    <thead>
+        <tr>
+            <th colspan="2" style="background-color: #f2f2f2; border: 1px solid #000000;">Activity ID (Hidden)</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('activity_id','cqi_activity_id','question_flag')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="border: 1px solid #000000;">{{ $q->activity_id ?? $q->cqi_activity_id ?? '-' }}</th>
+                @endforeach
+                <th style="border: 1px solid #000000;"></th><th style="border: 1px solid #000000;"></th>
+            @endforeach
+        </tr>
+        <tr>
+            <th colspan="2" style="background-color: #f2f2f2; border: 1px solid #000000;">Question ID (Hidden)</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id','cqi_question_id','question_flag')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="border: 1px solid #000000;">{{ $q->question_id ?? $q->cqi_question_id ?? '-' }}</th>
+                @endforeach
+                <th style="border: 1px solid #000000;"></th><th style="border: 1px solid #000000;"></th>
+            @endforeach
+        </tr>
+        <tr>
+            <th colspan="2" style="background-color: #f2f2f2; border: 1px solid #000000;">CLO ID (Hidden)</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="border: 1px solid #000000;">{{ $clo->clo_id }}</th>
+                @endforeach
+                <th style="border: 1px solid #000000;"></th><th style="border: 1px solid #000000;"></th>
+            @endforeach
+        </tr>
+
+        <!-- VISIBLE HEADER SECTION (Rows 7-12) -->
+        <!-- Row 7: CLO Codes -->
+        <tr>
+            <th colspan="2" style="text-align:center; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">CLO</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id','cqi_question_id')
+                        ->distinct()
+                        ->get();
+                    $question_count = $questions->count();
+                    $clo_code = \App\Models\CourseOfferClo::select('code')->whereId($clo->clo_id)->first();
+                @endphp
+                <th colspan="{{ $question_count }}" style="text-align:center; background-color: #4C7EF4; color: #ffffff; font-weight: bold; border: 1px solid #000000;">
+                    {{ $clo_code->code ?? '-' }}
+                </th>
+                <th rowspan="4" style="text-align:center; background-color: #d9edf7; font-weight: bold; border: 1px solid #000000; vertical-align: middle;">Weighted Total</th>
+                <th rowspan="4" style="text-align:center; background-color: #d9edf7; font-weight: bold; border: 1px solid #000000; vertical-align: middle;">CLO Achieved</th>
+            @endforeach
+        </tr>
+
+        <!-- Row 8: Activity Names -->
+        <tr>
+            <th colspan="2" style="text-align:center; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Activity</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('activity_id','cqi_activity_id','question_id','cqi_question_id','question_flag')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="text-align:center; background-color: #f8f9fa; font-weight: bold; border: 1px solid #000000;">
+                        @if($q->question_flag == 1)
+                            {{ $q->activity->assesment_name ?? '-' }}
+                        @elseif($q->question_flag == 2)
+                            {{ $q->cqiActivity->assesment->name ?? '-' }}
+                        @endif
+                    </th>
+                @endforeach
+            @endforeach
+        </tr>
+
+        <!-- Row 9: Question Names -->
+        <tr>
+            <th colspan="2" style="text-align:center; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Question</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id','cqi_question_id','question_flag')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="text-align:center; background-color: #f8f9fa; font-weight: bold; border: 1px solid #000000;">
+                        {{ $q->question?->name ?? $q->cqiQuestion?->question_name ?? '-' }}
+                    </th>
+                @endforeach
+            @endforeach
+        </tr>
+
+        <!-- Row 10: CLO Weight % -->
+        <tr>
+            <th colspan="2" style="text-align:center; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">CLO Weight %</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('obe_weight','question_flag','question_id','cqi_question_id')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="text-align:center; background-color: #f8f9fa; border: 1px solid #000000;">
+                        {{ $q->obe_weight ?? 0 }}
+                    </th>
+                @endforeach
+            @endforeach
+        </tr>
+
+        <!-- Row 11: KPI Row -->
+        <tr>
+            <th colspan="2" style="text-align:center; background-color: #f2f2f2; border: 1px solid #000000;"></th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id','cqi_question_id')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="text-align:center; border: 1px solid #000000;"></th>
+                @endforeach
+                <th colspan="2" style="text-align:center; background-color: #d9edf7; font-weight: bold; border: 1px solid #000000;">KPI 50%</th>
+            @endforeach
+        </tr>
+
+        <!-- Row 12: Max Marks header line -->
+        <tr>
+            <th style="text-align:left; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Registration No.</th>
+            <th style="text-align:left; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Name</th>
+            @foreach($clos as $clo)
+                @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('max_marks','question_flag','question_id','cqi_question_id')
+                        ->distinct()
+                        ->get();
+                @endphp
+                @foreach($questions as $q)
+                    <th style="text-align:center; background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">
+                        {{ $q->max_marks ?? 0 }}
+                    </th>
+                @endforeach
+                <th style="background-color: #d9edf7; border: 1px solid #000000;"></th>
+                <th style="background-color: #d9edf7; border: 1px solid #000000;"></th>
+            @endforeach
+        </tr>
+    </thead>
+
+    <!-- BODY SECTION (Row 13+) -->
+    <tbody>
+        @foreach($enrolledstudent as $student)
+            <tr>
+                <td style="border: 1px solid #000000; padding: 5px;">{{ $student->student->registration_no ?? '-' }}</td>
+                <td style="border: 1px solid #000000; padding: 5px;">{{ $student->student->name ?? '-' }}</td>
+
+                @foreach($clos as $clo)
+                    @php
+                    $questions = \App\Models\StudentQuestionAttainment::where('courseoffer_id', $id)
+                        ->where('clo_id', $clo->clo_id)
+                        ->select('question_id','cqi_question_id','question_flag')
+                        ->distinct()
+                        ->get();
+                    @endphp
+
+                    @foreach($questions as $q)
+                        <td style="text-align:center; border: 1px solid #000000;">
+                            <!-- Empty for Marks Entry -->
+                        </td>
+                    @endforeach
+
+                    <td style="background-color: #f8f9fa; border: 1px solid #000000;"></td>
+                    <td style="background-color: #f8f9fa; border: 1px solid #000000;"></td>
+                @endforeach
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+ 

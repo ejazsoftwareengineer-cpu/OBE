@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="description" content="Smarthr - Bootstrap Admin Template">
+		<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+        <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+        <meta name="robots" content="noindex, nofollow">
+        <title>Edit Session</title>      
+        @extends('layouts.backend.app')
+
+        @section('content')
+
+            <div class="page-wrapper">
+			
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col">
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></li>
+									<li class="breadcrumb-item active">Edit Session</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+					<div class="alert alert-primary alert-dismissible" style="background-color: #f8d7da; border-color:#f5c6cb; color:#721c24; margin-bottom: 0px;">
+                        <strong>Alert!</strong> System should have only one <strong>Active</strong> session.
+                    </div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card">
+								
+								<div class="card-body">
+									<form method="POST" action="{{ route('updatesession') }}" class="mb-5" id="validationForm" name="validationForm">
+										@csrf
+                                        <input type="hidden" name="id" value="{{ $sesssion->id }}">
+										<div class="row">
+											<div class="col-xl-6">
+												<div class="form-group row">
+													<label class="col-lg-3 col-form-label">Start Date</label>
+													<div class="col-lg-9">
+														<input class="form-control datetimepicker" value="{{ $sesssion->start_date }}" name="start_date" type="text" placeholder="Enter Start Date">
+															<span class="text-danger">{{$errors->first('start_date')}}</span>
+													</div>
+												</div>
+											</div>
+											<div class="col-xl-6">
+												<div class="form-group row">
+													<label class="col-lg-3 col-form-label">End Date</label>
+													<div class="col-lg-9">
+														<input class="form-control datetimepicker" value="{{ $sesssion->end_date }}" name="end_date" type="text" placeholder="Enter Start Date">
+															<span class="text-danger">{{$errors->first('end_date')}}</span>
+													</div>
+												</div>
+											</div>
+												
+											<div class="col-xl-6">
+												<div class="form-group row">
+													<label class="col-lg-3 col-form-label">Name</label>
+													<div class="col-lg-9">
+													<input id="title" type="text" value="{{ $sesssion->title }}" class="form-control"
+															name="title" placeholder="Fall / Spring Year">
+													</div>
+												</div>
+												
+												<div class="form-group row">
+													<label class="col-lg-3 col-form-label">Status</label>
+													<div class="col-lg-9">
+														<select name="status" class="select">
+															 
+															<option value="1"  @if($sesssion->status == '1') selected @endif>Active</option>
+															<option value="0"  @if($sesssion->status == '0') selected @endif>Inactive</option>
+														</select>
+														
+													</div>
+												</div>
+											</div>
+											<div class="col-xl-6">
+												<div class="form-group row">
+													<label class="col-lg-3 col-form-label">Type </label>
+													<div class="col-lg-9">
+														<select name="type" class="select">
+															 
+															<option value="f"  @if($sesssion->type == 'f') selected @endif>Fall</option>
+															<option value="s"  @if($sesssion->type == 's') selected @endif>Spring</option>
+														</select>
+														
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="text-left">
+											<button type="submit" class="btn btn-primary">Submit</button>
+											<button type="button" onclick="window.location='{{ route("managesession") }}'" class="btn btn-danger">Cancel</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				
+				</div>			
+			</div>
+        @endsection
+
+        @section('script')
+
+        @endsection
