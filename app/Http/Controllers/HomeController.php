@@ -204,8 +204,6 @@ set_time_limit(300); // Sets limit to 5 minutes
 
     public function userLogin(Request $request){
 
-
-       
         $request->validate([
             'email' => 'required',
             'password' => 'required',
