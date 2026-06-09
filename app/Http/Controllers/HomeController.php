@@ -120,9 +120,15 @@ class HomeController extends Controller
         }
     }
  
-    public function home()
+    public function home(Request $request)
     {
 set_time_limit(300); // Sets limit to 5 minutes
+
+        // ── Analytics Dashboard delegation (no new route required) ──
+        // Reached via: route('home', ['view' => 'analytics'])
+        if ($request->query('view') === 'analytics' && Auth::check()) {
+            return app(\App\Http\Controllers\DashboardController::class)->analytics($request);
+        }
 
         if(Auth::check()){
             $userRole;

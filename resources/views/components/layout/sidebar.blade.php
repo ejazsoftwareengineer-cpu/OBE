@@ -9,6 +9,9 @@
               <li class="{{ Route::currentRouteName() == 'getorganizationhierarchy' ? 'active' : '' }}">
                   <a href="{{ route('getorganizationhierarchy') }}"><i class="la la-tree"></i> <span> Hierarchy</span></a>
               </li>
+              <li class="{{ Route::currentRouteName() == 'analytics' ? 'active' : '' }}">
+                  <a href="{{ route('analytics') }}"><i class="la la-bar-chart"></i> <span> Analytics</span></a>
+              </li>
               <?php if ($collection){ ?>
                   <?php $menuchecker = 0; foreach ($categories as $cat){ 
                     $modules_of_this_category = $module_object->where('status', 1)->where('category_id', $cat->id)->get(); ?>

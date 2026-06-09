@@ -104,7 +104,15 @@ Route::get('/change-student-status', ['middleware' => ['auth'],'uses' =>'App\Htt
 Route::post('/get-state-by-country', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getStateByCountry','as' => 'getstatebycountry']);
 Route::post('/get-cities-by-states', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getCitiesByStates','as' => 'getcitiesbystates']);
 Route::get('/get-organization-hierarchy', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getOrganizationHierarchy','as' => 'getorganizationhierarchy']);
+Route::get('/analytics', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\DashboardController@analytics','as' => 'analytics']);
 // 
+
+
+//     Route::get('/dashboard/analytics', [
+//     'uses' => 'App\Http\Controllers\DashboardController@analytics',
+//     'as'   => 'dashboard.analytics',
+// ])->middleware('auth');
+
 Route::post('/get-data-by-function', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getDatabyFunction','as' => 'getdatabyfunction']);
 Route::post('/get-roles-by-user', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getRolesByUser','as' => 'getrolesbyuser']);
 Route::post('/get-campus-by-organization', ['middleware' => ['auth'],'uses' =>'App\Http\Controllers\CommonController@getCampusByOrganization','as' => 'getcampusbyorganization']);
@@ -502,3 +510,4 @@ Route::get('/download-student-template', ['middleware' => ['auth'],'uses' =>'App
 Route::get('/status-report', [App\Http\Controllers\ReportController::class, 'statusreport'])
     ->middleware(['auth'])
     ->name('status.report');Route::post('/status-report', [App\Http\Controllers\ReportController::class, 'statusreport'])->name('status.report');
+

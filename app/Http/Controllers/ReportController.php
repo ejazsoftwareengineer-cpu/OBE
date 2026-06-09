@@ -508,6 +508,7 @@ class ReportController extends Controller
 
         // CourseOffer → PLO mapping
         $courseOfferPlos = CourseOfferPlo::select('course_section_id','plo_id')
+            ->distinct()    
             ->get()
             ->groupBy('course_section_id');
 
@@ -699,6 +700,7 @@ class ReportController extends Controller
             ->keyBy('id');
 
         $courseOfferPlos = CourseOfferPlo::select('course_section_id','plo_id')
+            ->distinct()
             ->get()
             ->groupBy('course_section_id');
 
@@ -743,8 +745,22 @@ class ReportController extends Controller
             ];
         }
 
+        /* ----- Header metadata for the Excel report ----- */
+        $program    = \App\Models\Program::with('institute')->find($request->program_id);
+        $session    = \App\Models\Sesssion::find($request->session_id);
+
+        $instituteName  = $program->institute->name ?? '—';
+        $departmentName = $program->name            ?? '—';   // program/department label
+        $sessionName    = $session->title           ?? '—';
+
         return Excel::download(
-            new ProgramPloExport($finalStudents, $prog_plos),
+            new ProgramPloExport(
+                $finalStudents,
+                $prog_plos,
+                $instituteName,
+                $departmentName,
+                $sessionName
+            ),
             'program-plo-report.xlsx'
         );
     }
